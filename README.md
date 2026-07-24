@@ -2,6 +2,9 @@
 
 Projeto desenvolvido em **Python**, utilizando **Flask** e **MySQL**, para realizar o cadastro e gerenciamento de clientes.
 
+<img width="1897" height="387" alt="image" src="https://github.com/user-attachments/assets/f3278e64-09e0-4fdf-8e6c-0450c7ac9692" />
+
+
 ## Funcionalidades
 
 - Cadastrar clientes
