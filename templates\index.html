@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Clientes</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+
+
+
+<div style="margin-bottom: 20px; background: #fff; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+
+    <h3>Cadastrar Cliente</h3>
+
+    <form action="/salvar" method="POST">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+
+            <input type="hidden" name="id" id="id">
+
+            <input type="text" name="nome" id="nome" placeholder="Nome" required
+                style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+
+            <input type="email" name="email" id="email" placeholder="Email" required
+                style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+
+            <input type="text" name="telefone" id="telefone" placeholder="Telefone"
+                style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+
+            <input type="date" name="data_cadastro" id="data_cadastro" placeholder=""
+                style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+
+                <button id="btnSalvar" type="submit"
+                style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                Salvar
+            </button>
+        </div>
+
+        
+    </form>
+
+</div>
+
+<div class="container">
+    <h2>Lista de Clientes</h2>
+
+   <div style="margin-bottom: 15px;">
+    
+    <form action="/" method="GET" style="display: flex; gap: 10px;">
+        
+        <input 
+            type="text" 
+            name="busca"
+            value="{{busca}}"
+            placeholder="Buscar cliente pelo nome, email ou telefone..."
+            style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+
+            <button type="submit" 
+                style="padding:10px 20px; background:#007bff; color:white; border:none; border-radius:5px; cursor:pointer">
+                Buscar
+            </button>
+
+        </form>
+
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Data Cadastro</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <!-- Puxar do banco de dados -->
+             {% for cli in clientes %}
+            <tr>
+                <td>{{cli.id}}</td>
+                <td>{{cli.nome}}</td>
+                <td>{{cli.email}}</td>
+                <td>{{cli.telefone}}</td>
+                <td>
+                    {% if cli.data_cadastro %}
+                        {{cli.data_cadastro.strftime('%d/%m/%Y')}}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+
+                <td>
+                    <button onclick="editarCliente('{{cli.id}}')" style="background: #ffc107; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+                        Editar
+                    </button>
+
+                    <a href="/excluir/{{cli.id}}" onclick="return confirm('Deseja realmente excluir?')" style="background: #dc3545; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-left: 5px;">
+                        Excluir
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+           
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
+
+
+<script>
+    function editarCliente(id){
+        fetch('/buscar_cliente/' + id).then(response => response.json())
+            .then(dados => {                
+                document.getElementById('id').value = dados.id;
+                document.getElementById('nome').value = dados.nome;
+                document.getElementById('email').value = dados.email;
+                document.getElementById('telefone').value = dados.telefone;
+                document.getElementById('data_cadastro').value = dados.data_cadastro || '';
+                document.getElementById('btnSalvar').innerText = 'Editar';
+
+            })
+
+
+    }
+</script>
